@@ -1,7 +1,5 @@
 # Automatic Terminal
 
-[![Build Status](https://img.shields.io/travis/your-repo/automatic-terminal.svg)](https://travis-ci.org/your-repo/automatic-terminal)
-
 **Automatic Terminal** is a VS Code extension that automates your development workflow by opening multiple terminals with custom names and commands with a single command execution.
 
 ## Features
