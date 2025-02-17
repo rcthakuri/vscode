@@ -30,7 +30,3 @@ Add your terminal settings to your `settings.json`:
 
 1. Open the Command Palette (`Ctrl+Shift+P` / `Cmd+Shift+P`).
 2. Run **Terminal Pilot: Start Terminals**.
-
----
-
-This version keeps it short and to the point, while still providing the essential details.
