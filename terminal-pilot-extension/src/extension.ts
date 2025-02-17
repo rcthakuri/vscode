@@ -5,10 +5,14 @@ interface TerminalConfig {
 	show: boolean;
 }
 
+
 export function activate(context: vscode.ExtensionContext) {
 	console.log('Terminal Pilot is now active!');
 
-	const disposable = vscode.commands.registerCommand('extension.terminalPilot', () => {
+	const startTerminalPilotCommand = 'extension.terminalPilot';
+
+	// Function that reads the configuration and launches terminals.
+	const startTerminals = () => {
 		// Dispose of all existing terminals
 		vscode.window.terminals.forEach(term => term.dispose());
 
@@ -39,9 +43,27 @@ export function activate(context: vscode.ExtensionContext) {
 				}
 			}
 		}
-	});
+	};
 
+	// Register the command for manual invocation.
+	const disposable = vscode.commands.registerCommand(startTerminalPilotCommand, startTerminals);
 	context.subscriptions.push(disposable);
+
+	// Create a status bar item for manual execution.
+	const statusBarItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 100);
+	statusBarItem.text = '$(terminal) Pilot';
+	statusBarItem.tooltip = 'Launch Terminal Pilot';
+	statusBarItem.command = startTerminalPilotCommand;
+	statusBarItem.show();
+	context.subscriptions.push(statusBarItem);
+
+	// Check auto-launch setting and start terminals if enabled.
+	const config = vscode.workspace.getConfiguration('terminal-pilot');
+	const autoLaunch = config.get<boolean>('auto-launch', false);
+	if (autoLaunch) {
+		console.log('Terminal Pilot: Auto-launching terminals...');
+		startTerminals();
+	}
 }
 
 export function deactivate() {}

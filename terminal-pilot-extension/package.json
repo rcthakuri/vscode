@@ -12,7 +12,8 @@
     "Other"
   ],
   "activationEvents": [
-    "onCommand:extension.terminalPilot"
+    "onCommand:extension.terminalPilot",
+    "*"
   ],
   "main": "./dist/extension.js",
   "contributes": {
@@ -29,6 +30,11 @@
         "terminal-pilot.terminals": {
           "type": "object",
           "description": "Define your terminal configurations. Each key is the terminal name and its value is an object with a command to execute and a flag to indicate if the terminal should be shown. Example:\n\n{\n  \"myTerminal\": {\n    \"command\": \"echo Hello World\",\n    \"show\": true\n  }\n}"
+        },
+        "terminal-pilot.auto-launch": {
+          "type": "boolean",
+          "default": false,
+          "description": "Automatically launch terminals when VS Code starts."
         }
       }
     }
