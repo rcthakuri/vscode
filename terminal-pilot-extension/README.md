@@ -1,7 +1,5 @@
 # Terminal Pilot
 
-[![Build Status](https://img.shields.io/travis/your-repo/terminal-pilot.svg)](https://travis-ci.org/your-repo/terminal-pilot)
-
 **Terminal Pilot** is a VS Code extension that automates your workflow by launching multiple terminals with custom configurations in one command.
 
 ## Features
