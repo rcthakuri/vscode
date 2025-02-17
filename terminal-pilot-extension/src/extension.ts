@@ -6,17 +6,14 @@ interface TerminalConfig {
 }
 
 
-export function activate(context: vscode.ExtensionContext) {
+export async function activate(context: vscode.ExtensionContext) {
 	console.log('Terminal Pilot is now active!');
 
 	const startTerminalPilotCommand = 'extension.terminalPilot';
 
 	// Function that reads the configuration and launches terminals.
 	const startTerminals = () => {
-		// Dispose of all existing terminals
-		vscode.window.terminals.forEach(term => term.dispose());
-
-		// Read the terminal configuration from the user's settings
+		console.log('Terminal Pilot: Starting terminals...');
 		const config = vscode.workspace.getConfiguration('terminal-pilot');
 		const terminalConfigs: { [terminalName: string]: TerminalConfig } | undefined = config.get('terminals');
 
@@ -26,7 +23,15 @@ export function activate(context: vscode.ExtensionContext) {
 			return;
 		}
 
-		// Iterate over each terminal configuration and create the terminals.
+		// Dispose only those terminals whose names are in the configuration.
+		const configTerminalNames = Object.keys(terminalConfigs);
+		vscode.window.terminals.forEach(term => {
+			if (configTerminalNames.includes(term.name)) {
+				term.dispose();
+			}
+		});
+
+		// Create new terminals based on the configuration.
 		for (const terminalName in terminalConfigs) {
 			if (Object.prototype.hasOwnProperty.call(terminalConfigs, terminalName)) {
 				const termConfig = terminalConfigs[terminalName];
@@ -49,7 +54,7 @@ export function activate(context: vscode.ExtensionContext) {
 	const disposable = vscode.commands.registerCommand(startTerminalPilotCommand, startTerminals);
 	context.subscriptions.push(disposable);
 
-	// Create a status bar item for manual execution.
+	// Create a status bar item for manual launch.
 	const statusBarItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 100);
 	statusBarItem.text = '$(terminal) Pilot';
 	statusBarItem.tooltip = 'Launch Terminal Pilot';
@@ -57,7 +62,7 @@ export function activate(context: vscode.ExtensionContext) {
 	statusBarItem.show();
 	context.subscriptions.push(statusBarItem);
 
-	// Check auto-launch setting and start terminals if enabled.
+	// Auto-launch logic: only launch once per fresh VS Code start.
 	const config = vscode.workspace.getConfiguration('terminal-pilot');
 	const autoLaunch = config.get<boolean>('auto-launch', false);
 	if (autoLaunch) {
