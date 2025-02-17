@@ -1,6 +1,8 @@
 {
-  "name": "mm-terminal-automation",
-  "displayName": "mm-terminal-automation",
+  "name": "terminal-pilot",
+  "displayName": "Terminal Pilot",
+  "publisher": "rcthakuri",
+  "icon": "assets/terminal-pilot-icon.webp",
   "description": "",
   "version": "0.0.1",
   "engines": {
@@ -10,16 +12,26 @@
     "Other"
   ],
   "activationEvents": [
-    "onCommand:extension.startMMTerminals"
+    "onCommand:extension.terminalPilot"
   ],
   "main": "./dist/extension.js",
   "contributes": {
     "commands": [
       {
-        "command": "extension.startMMTerminals",
-        "title": "Start MorphMarket Terminals"
+        "command": "extension.terminalPilot",
+        "title": "Terminal Pilot: Start Terminals"
       }
-    ]
+    ],
+    "configuration": {
+      "type": "object",
+      "title": "Terminal Pilot Configuration",
+      "properties": {
+        "terminal-pilot.terminals": {
+          "type": "object",
+          "description": "Define your terminal configurations. Each key is the terminal name and its value is an object with a command to execute and a flag to indicate if the terminal should be shown. Example:\n\n{\n  \"myTerminal\": {\n    \"command\": \"echo Hello World\",\n    \"show\": true\n  }\n}"
+        }
+      }
+    }
   },
   "repository": {
     "type": "git",

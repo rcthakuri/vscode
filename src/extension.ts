@@ -1,31 +1,44 @@
 import * as vscode from 'vscode';
 
+interface TerminalConfig {
+	command: string;
+	show: boolean;
+}
+
 export function activate(context: vscode.ExtensionContext) {
+	console.log('Terminal Pilot is now active!');
 
-	console.log('Congratulations, your extension "mm-terminal-automation" is now active!');
-
-	const disposable = vscode.commands.registerCommand('extension.startMMTerminals', () => {
-		// First, dispose of all existing terminals
+	const disposable = vscode.commands.registerCommand('extension.terminalPilot', () => {
+		// Dispose of all existing terminals
 		vscode.window.terminals.forEach(term => term.dispose());
 
-		// Terminal 1: runserver
-		const term1 = vscode.window.createTerminal({ name: 'runserver' });
-		// term1.show();
-		term1.sendText('./bin/manage runserver 0.0.0.0:8000');
+		// Read the terminal configuration from the user's settings
+		const config = vscode.workspace.getConfiguration('terminal-pilot');
+		const terminalConfigs: { [terminalName: string]: TerminalConfig } | undefined = config.get('terminals');
 
-		// Terminal 2: frontend
-		const term2 = vscode.window.createTerminal({ name: 'frontend' });
-		// We want to make this terminal visible & active to users
-		term2.show();
-		term2.sendText('yarn install; yarn dev');
+		// If no terminal configuration is set, show an error and return.
+		if (!terminalConfigs || Object.keys(terminalConfigs).length === 0) {
+			vscode.window.showErrorMessage('Terminal Pilot: No terminal configurations found in settings.');
+			return;
+		}
 
-		// Terminal 3: test
-		const term3 = vscode.window.createTerminal({ name: 'test' });
-		// term3.show();
-
-		// Terminal 4: misc
-		const term4 = vscode.window.createTerminal({ name: 'misc' });
-		// term4.show();
+		// Iterate over each terminal configuration and create the terminals.
+		for (const terminalName in terminalConfigs) {
+			if (Object.prototype.hasOwnProperty.call(terminalConfigs, terminalName)) {
+				const termConfig = terminalConfigs[terminalName];
+				const terminal = vscode.window.createTerminal({ name: terminalName });
+				
+				// Show the terminal if the "show" flag is true.
+				if (termConfig.show) {
+					terminal.show();
+				}
+				
+				// Send the command if provided.
+				if (termConfig.command && termConfig.command.trim() !== "") {
+					terminal.sendText(termConfig.command);
+				}
+			}
+		}
 	});
 
 	context.subscriptions.push(disposable);
