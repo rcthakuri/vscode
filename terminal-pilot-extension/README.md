@@ -19,8 +19,8 @@ Add your terminal settings to your `settings.json`:
 
 ```json
 {
-  "terminalPilot.terminalConfiguration": {
-    "terminal1": { "command": "echo Hello", "show": true },
+  "terminal-pilot.terminals": {
+    "terminal1": { "command": "echo Hello" },
     "terminal2": { "command": "npm start", "show": true }
   }
 }
